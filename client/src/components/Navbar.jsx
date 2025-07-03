@@ -12,7 +12,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleCloseMenu = () => {
-    scrollTo(0, 0), setIsMenuOpen(false);
+    scrollTo(0, 0);
+    setIsMenuOpen(false);
   };
 
   return (
