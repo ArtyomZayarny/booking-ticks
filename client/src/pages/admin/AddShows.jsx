@@ -48,6 +48,9 @@ const AddShows = () => {
       }
       return prev;
     });
+
+    // Clear the input after adding
+    setDateTimeInput("");
   };
 
   const handleRemoveTime = (date, time) => {
@@ -74,12 +77,23 @@ const AddShows = () => {
         Object.keys(dateTimeSelection).length === 0 ||
         !showPrice
       ) {
-        return toast("Missing required fields");
+        toast.error("Missing required fields");
+        setAddingShow(false);
+        return;
       }
 
-      const showsInput = Object.entries(dateTimeSelection).map(
-        ([date, time]) => ({ date, time })
-      );
+      // const showsInput = Object.entries(dateTimeSelection).map(
+      //   ([date, time]) => ({ date, time })
+      // );
+
+      // For now, just show success message since API is commented out
+      toast.success("Show added successfully!");
+
+      // Reset form
+      setSelectedMovie(null);
+      setDateTimeSelection({});
+      setShowPrice("");
+      setDateTimeInput("");
 
       //   const payload = {
       //     movieId: selectedMovie,
