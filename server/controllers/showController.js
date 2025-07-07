@@ -142,7 +142,7 @@ export const getShow = async (req, res) => {
       if (!dateTime[date]) {
         dateTime[date] = [];
       }
-      dateTime[date].push({ time: show.shoDateTime, showId: show._id });
+      dateTime[date].push({ time: show.showDateTime, showId: show._id });
     });
     res.json({ success: true, show: { movie, dateTime } });
   } catch (error) {

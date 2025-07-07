@@ -6,18 +6,17 @@ import { ArrowRightIcon, ClockIcon } from "lucide-react";
 import isoTimeFormat from "../lib/isoTimeFormat";
 import BlurCircle from "../components/BlurCircle";
 import toast from "react-hot-toast";
-//import { useUserContext } from "../context/UserContext";
-import { dummyShowsData, dummyDateTimeData } from "../assets/assets";
+import { useAppContext } from "../context/AppContext";
 
 const SeatLayout = () => {
   const { id, date } = useParams();
 
-  // const { axios, getToken, user } = useAppContext(); // Commented out as not used with mocked data
-  //const { user } = useUserContext();
+  const { axios, getToken, user } = useAppContext(); // Commented out as not used with mocked data
 
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [selectedTime, setSelectedTime] = useState(null);
   const [show, setShow] = useState(null);
+  const [occupiedSeats, setOccupiedSeats] = useState([]);
   const navigate = useNavigate();
   const groupRows = [
     ["A", "B"],
@@ -27,25 +26,13 @@ const SeatLayout = () => {
     ["I", "J"],
   ];
 
-  const [occupiedSeats, setOccupiedSeats] = useState([]);
-
   const getShow = async () => {
     try {
-      // Commented out axios call - using mocked data
-      // const { data } = await axios.get(`/api/show/${id}`);
-      // if (data.success) {
-      //   setShow(data);
-      // }
-
-      // Using mocked data from assets.js
-      const movieData = dummyShowsData.find(
-        (movie) => movie._id === id || movie.id.toString() === id
-      );
-      if (movieData) {
-        setShow({
-          movie: movieData,
-          dateTime: dummyDateTimeData,
-        });
+      const { data } = await axios.get(`/api/shows/${id}`, {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      if (data.success) {
+        setShow(data.show);
       }
     } catch (error) {
       console.log(error);
@@ -92,18 +79,12 @@ const SeatLayout = () => {
 
   const getOccupiedSeats = async () => {
     try {
-      // Commented out axios call - using mocked data
-      // const { data } = await axios.get(
-      //   `/api/booking/seats/${selectedTime.showId}`
-      // );
-      // if (data.success) {
-      //   setOccupiedSeats(data.occupiedSeats);
-      // } else {
-      //   toast.error(data.message);
-      // }
-
-      // Using mocked data - simulate some occupied seats
-      setOccupiedSeats(["A1", "B3", "C5", "D2"]);
+      const { data } = await axios.get(
+        `/api/bookings/seats/${selectedTime.showId}`
+      );
+      if (data.success) {
+        setOccupiedSeats(data.occupiedSeats);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -111,29 +92,28 @@ const SeatLayout = () => {
 
   const bookTickets = async () => {
     try {
-      if (!user) return toast.error("Please login to book tickets");
+      if (!user) return toast.error("Please login to proceed");
+
       if (!selectedTime || !selectedSeats.length)
         return toast.error("Please select a time & seat");
-
-      // Commented out axios call - using mocked data
-      // const { data } = await axios.post(
-      //   "/api/booking/create",
-      //   { showId: selectedTime.showId, selectedSeats },
-      //   { headers: { Authorization: `Bearer ${await getToken()}` } }
-      // );
-      // if (data.success) {
-      //   window.location.href = data.url;
-      // } else {
-      //   toast.error(data.message);
-      // }
-
-      // Using mocked data - simulate successful booking
-      toast.success("Booking successful! Redirecting to payment...");
-      setTimeout(() => {
+      const { data } = await axios.post(
+        "/api/bookings/create",
+        {
+          showId: selectedTime.showId,
+          selectedSeats,
+        },
+        {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        }
+      );
+      if (data.success) {
+        toast.success(data.message);
         navigate("/my-bookings");
-      }, 2000);
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
-      toast.error(error.message);
+      console.log(error);
     }
   };
 
@@ -188,7 +168,7 @@ const SeatLayout = () => {
         </div>
 
         <button
-          onClick={() => navigate("/my-bookings")}
+          onClick={bookTickets}
           className="flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer active:scale-95"
         >
           Proceed to Checkout
