@@ -6,7 +6,10 @@ import connectDB from "./configs/db.js";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
 import showRouter from "./routes/showRoutes.js";
-//dotenv.config();
+import bookingRouter from "./routes/bookingRoutes.js";
+import adminRouter from "./routes/adminRoutes.js";
+import userRouter from "./routes/ userRoutes.js";
+
 const port = 3000;
 const app = express();
 await connectDB();
@@ -21,6 +24,10 @@ app.get("/", (req, res) => {
 });
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/shows", showRouter);
+app.use("/api/bookings", bookingRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/user", userRouter);
+
 //Start the server
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${port}`);
