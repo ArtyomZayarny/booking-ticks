@@ -139,12 +139,12 @@ export const getShow = async (req, res) => {
     const dateTime = {};
     shows.forEach((show) => {
       const date = show.showDateTime.toISOString().split("T")[0];
-      if (!dateTie[date]) {
+      if (!dateTime[date]) {
         dateTime[date] = [];
       }
       dateTime[date].push({ time: show.shoDateTime, showId: show._id });
     });
-    res.json({ success: true, movie, dateTime });
+    res.json({ success: true, show: { movie, dateTime } });
   } catch (error) {
     console.error("Error fetching show:", error.message);
     res.json({ success: false, message: error.message });

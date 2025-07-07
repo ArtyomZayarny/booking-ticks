@@ -1,18 +1,16 @@
 import AdminNavbar from "../../components/admin/AdminNavbar";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import { Outlet } from "react-router-dom";
-//import { useAppContext } from "../../context/AppContext";
+import { useAppContext } from "../../context/AppContext";
 import { useEffect } from "react";
 import Loading from "../../components/Loading";
 
 const Layout = () => {
-  const isAdmin = true;
+  const { isAdmin, fetchIsAdmin } = useAppContext();
 
-  // const { isAdmin, fetchIsAdmin } = useAppContext();
-
-  //   useEffect(() => {
-  //     fetchIsAdmin();
-  //   }, []);
+  useEffect(() => {
+    fetchIsAdmin();
+  }, []);
 
   return isAdmin ? (
     <>
