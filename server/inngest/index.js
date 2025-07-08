@@ -70,9 +70,9 @@ const sendBookingConfirmationEmail = inngest.createFunction(
         populate: { path: "movie", model: "Movie" },
       })
       .populate("user");
-
+    console.log("booking", booking);
     await sendEmail({
-      to: Booking.user.email,
+      to: booking.user.email,
       subject: `Payment confirmation: ${bookingId.show.movie.title} booked!`,
       body: `
       <h1>Hi ${bookingId.user.name}, </h1>

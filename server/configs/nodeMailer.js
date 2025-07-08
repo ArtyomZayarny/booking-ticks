@@ -16,13 +16,10 @@ const sendEmail = async ({ to, subject, body }) => {
     subject,
     html: body,
   };
-  try {
-    const response = await transport.sendMail(mailOptions);
-    return response;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+
+  const response = await transport.sendMail(mailOptions);
+
+  return response;
 };
 
 export default sendEmail;
