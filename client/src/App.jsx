@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "./components/Navbar";
-import Favorite from "./pages/favorite";
+import Favorite from "./pages/Favorite";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Movies from "./pages/Movies";
@@ -21,7 +21,7 @@ import Loading from "./components/Loading";
 function App() {
   const isAdminRoute = useLocation().pathname.startsWith("/admin");
 
-  const { user } = useAppContext();
+  const { isAdmin, user } = useAppContext();
   return (
     <>
       <Toaster />
@@ -39,7 +39,7 @@ function App() {
         <Route
           path="/admin/*"
           element={
-            user ? (
+            user && isAdmin ? (
               <Layout />
             ) : (
               <div className="min-h-screen flex justify-center items-center">

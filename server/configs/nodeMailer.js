@@ -1,24 +1,27 @@
 import nodemailer from "nodemailer";
+import { MailtrapTransport } from "mailtrap";
 
-export const transport = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const TOKEN = process.env.MAILTRAP_TOKEN;
+
+const transport = nodemailer.createTransport(
+  MailtrapTransport({
+    token: TOKEN,
+    testInboxId: 3878364,
+  })
+);
 
 const sendEmail = async ({ to, subject, body }) => {
-  const mailOptions = {
+  const sender = {
+    address: "hello@example.com",
+    name: "Mailtrap Test",
+  };
+  const recipients = ["timaz.dev@gmail.com"];
+  const response = await transport.sendMail({
     from: process.env.SENDER_EMAIL,
     to,
     subject,
     html: body,
-  };
-
-  const response = await transport.sendMail(mailOptions);
-
+  });
   return response;
 };
 
